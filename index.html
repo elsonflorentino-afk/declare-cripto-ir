@@ -445,17 +445,29 @@ body {
   background: var(--bg);
   padding: 32px;
   font-size: 0.95rem; color: var(--gray-1); line-height: 1.75;
-  transition: background 0.35s var(--ease-out), transform 0.35s var(--ease-swoop), box-shadow 0.35s var(--ease-out), z-index 0s;
+  /* Tilt JS controla o transform — transição de saída (mouseleave) */
+  transition: box-shadow 0.4s var(--ease-out), background 0.3s var(--ease-out), z-index 0s;
   position: relative;
-  transform-origin: center center;
+  transform-style: preserve-3d;
+  will-change: transform;
   z-index: 1;
 }
 .problem-item:hover {
   background: var(--bg-2);
-  transform: scale(1.03) translateZ(16px);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,179,126,0.18);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(0,179,126,0.22);
   z-index: 10;
 }
+/* Specular highlight segue o cursor via CSS var --mx/--my */
+.problem-item .tilt-glare {
+  position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%),
+    rgba(255,255,255,0.07) 0%, transparent 55%);
+  opacity: 0;
+  transition: opacity 0.3s var(--ease-out);
+  border-radius: inherit;
+}
+.problem-item:hover .tilt-glare { opacity: 1; }
+
 .problem-item::before {
   content: attr(data-n);
   display: block;
@@ -493,16 +505,26 @@ body {
 }
 .risk-card {
   background: var(--bg-3); padding: 32px 28px;
-  transition: background 0.35s var(--ease-out), transform 0.35s var(--ease-swoop), box-shadow 0.35s var(--ease-out), z-index 0s;
-  transform-origin: center center;
-  position: relative; z-index: 1;
+  transition: box-shadow 0.4s var(--ease-out), background 0.3s var(--ease-out), z-index 0s;
+  position: relative;
+  transform-style: preserve-3d;
+  will-change: transform;
+  z-index: 1;
 }
 .risk-card:hover {
   background: var(--bg-card);
-  transform: scale(1.04) translateZ(20px);
-  box-shadow: 0 16px 48px rgba(0,0,0,0.7), 0 0 0 1px rgba(0,179,126,0.2);
+  box-shadow: 0 24px 64px rgba(0,0,0,0.75), 0 0 0 1px rgba(0,179,126,0.24);
   z-index: 10;
 }
+.risk-card .tilt-glare {
+  position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%),
+    rgba(255,255,255,0.07) 0%, transparent 55%);
+  opacity: 0;
+  transition: opacity 0.3s var(--ease-out);
+  border-radius: inherit;
+}
+.risk-card:hover .tilt-glare { opacity: 1; }
 .risk-card .r-num {
   font-size: 10px; font-weight: 700; color: var(--green);
   letter-spacing: 0.14em; text-transform: uppercase;
@@ -1236,15 +1258,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <div class="problem-grid">
       <div class="problem-item reveal" data-n="Erro 01">
+        <div class="tilt-glare"></div>
         Você tem Bitcoin, Ethereum ou altcoins declarados como "saldo em conta" — sem saber que cada ativo tem <strong>código e grupo específico</strong> no programa da Receita.
       </div>
       <div class="problem-item reveal reveal-d1" data-n="Erro 02">
+        <div class="tilt-glare"></div>
         Você vendeu cripto em algum mês e não emitiu o DARF até o último dia útil do mês seguinte — sem saber que a <strong>multa por atraso é de 0,33% ao dia</strong>, mais 1% por mês.
       </div>
       <div class="problem-item reveal reveal-d2" data-n="Erro 03">
+        <div class="tilt-glare"></div>
         Você recebeu rendimentos de staking, yield farming ou cashback em exchange — e não sabe se isso é <strong>rendimento tributável, ganho de capital ou não tributável.</strong>
       </div>
       <div class="problem-item reveal reveal-d3" data-n="Erro 04">
+        <div class="tilt-glare"></div>
         Você tem cripto em Binance, Coinbase ou Kraken — e não sabe que <strong>posição acima de US$1.000 exige declaração como bem no exterior</strong>, com regras diferentes da Receita.
       </div>
     </div>
@@ -1267,16 +1293,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <div class="risk-grid">
       <div class="risk-card reveal">
+        <div class="tilt-glare"></div>
         <div class="r-num">Fato 01</div>
         <div class="r-title">A IN 1888 obriga exchanges a reportar.</div>
         <div class="r-body">Toda exchange com CNPJ no Brasil é obrigada a informar à Receita Federal todas as operações — incluindo nome, CPF, valor e tipo de ativo. Se você transacionou, a Receita provavelmente já tem os dados. Declarar certo não é opcional.</div>
       </div>
       <div class="risk-card reveal reveal-d1">
+        <div class="tilt-glare"></div>
         <div class="r-num">Fato 02</div>
         <div class="r-title">Multa por omissão: <strong>75% a 150%</strong> do imposto.</div>
         <div class="r-body">Omissão de rendimentos resulta em multa de 75% sobre o imposto não pago — podendo chegar a 150% em caso de fraude. Isso sem contar juros de mora (Selic + 1%). Uma declaração errada pode custar muito mais do que qualquer ganho não declarado.</div>
       </div>
       <div class="risk-card reveal reveal-d2">
+        <div class="tilt-glare"></div>
         <div class="r-num">Fato 03</div>
         <div class="r-title">Prazo: <strong>31 de maio.</strong> Sem prorrogação.</div>
         <div class="r-body">O programa da Receita abre em março e fecha em 31 de maio. Declaração fora do prazo gera multa mínima de R$165,74, podendo chegar a 20% do imposto devido. Quem se prepara antes evita a correria — e o erro.</div>
@@ -1771,6 +1800,40 @@ document.addEventListener('DOMContentLoaded', function () {
 
 /* ─── CONTADORES com easing swoop ─── */
 /* (os contadores já existem no script principal — aqui só aumentamos a duração) */
+
+/* ─── TILT 3D CARDS ─── */
+(function () {
+  var TILT_MAX_X = 8;   /* graus rotação vertical */
+  var TILT_MAX_Y = 10;  /* graus rotação horizontal */
+  var LIFT_Z    = 22;   /* px elevação no eixo Z */
+
+  function applyTilt(card) {
+    card.addEventListener('mousemove', function (e) {
+      var rect = card.getBoundingClientRect();
+      var x = (e.clientX - rect.left)  / rect.width;   /* 0..1 */
+      var y = (e.clientY - rect.top)   / rect.height;  /* 0..1 */
+
+      var rotX = -((y - 0.5) * 2 * TILT_MAX_X).toFixed(2);
+      var rotY = ( (x - 0.5) * 2 * TILT_MAX_Y).toFixed(2);
+
+      card.style.transition = 'box-shadow 0.4s, background 0.3s, z-index 0s';
+      card.style.transform  =
+        'perspective(900px) rotateX(' + rotX + 'deg) rotateY(' + rotY + 'deg) scale(1.03) translateZ(' + LIFT_Z + 'px)';
+
+      /* Move o specular highlight */
+      card.style.setProperty('--mx', (x * 100).toFixed(1) + '%');
+      card.style.setProperty('--my', (y * 100).toFixed(1) + '%');
+    });
+
+    card.addEventListener('mouseleave', function () {
+      /* Snap back suave */
+      card.style.transition = 'transform 0.55s cubic-bezier(.2,1,.3,1), box-shadow 0.4s, background 0.3s, z-index 0s';
+      card.style.transform  = 'perspective(900px) rotateX(0deg) rotateY(0deg) scale(1) translateZ(0px)';
+    });
+  }
+
+  document.querySelectorAll('.problem-item, .risk-card').forEach(applyTilt);
+}());
 
 /* ─── MOBILE FLOATING CTA ─── */
 var mobileCta = document.getElementById('mobile-cta');
