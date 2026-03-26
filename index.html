@@ -47,8 +47,20 @@ src="https://www.facebook.com/tr?id=1062572485162288&ev=PageView&noscript=1"
 <style>
 /* ═══════════════════════════════════════════════════════════
    PRECISION BLACK — Design System v3
-   Referências: Epic.net · Apple iPhone · Dropbox Brand · Scott Snyder
+   Referências: Epic.net · Apple iPhone · Dropbox Brand · Scott Snyder · Aura.build
    ═══════════════════════════════════════════════════════════ */
+
+/* ── CSS Houdini @property — anima ângulo do conic-gradient ── */
+@property --form-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+@property --form-shine {
+  syntax: '<color>';
+  initial-value: rgba(255,255,255,0);
+  inherits: false;
+}
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -261,37 +273,113 @@ body {
 .step-body strong { display: block; font-size: 0.88rem; font-weight: 700; color: var(--white); margin-bottom: 2px; }
 .step-body span { font-size: 0.8rem; color: var(--gray-2); line-height: 1.5; }
 
-/* ── FORM CARD ── */
-.hero-form {
-  position: sticky; top: 80px;
-  background: var(--bg-3);
-  border: 1px solid var(--border-md);
-  border-radius: 4px;
-  padding: 32px;
-  /* Linha verde no topo */
-  border-top: 2px solid var(--green);
-  box-shadow: 0 0 60px rgba(0,179,126,0.07), 0 24px 48px rgba(0,0,0,0.4);
+/* ════════════════════════════════════════════════════
+   FORM CARD — Aura.build technique
+   Conic-gradient border + Aurora interna + 6-layer shadow
+   ════════════════════════════════════════════════════ */
+
+/* Keyframes exclusivos do form */
+@keyframes form-border-spin {
+  to { --form-angle: 360deg; }
+}
+@keyframes aurora-drift {
+  0%   { background-position: 0% 0%; }
+  33%  { background-position: 100% 50%; }
+  66%  { background-position: 50% 100%; }
+  100% { background-position: 0% 0%; }
+}
+@keyframes badge-float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  35%       { transform: translateY(-5px) rotate(-4deg); }
+  70%       { transform: translateY(-2px) rotate(3deg); }
+}
+@keyframes btn-shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+@keyframes form-pulse-glow {
+  0%, 100% { opacity: 0.7; }
+  50%       { opacity: 1; }
 }
 
+/* ── Borda animada via conic-gradient (técnica Aura.build) ── */
+.hero-form {
+  position: sticky; top: 80px;
+  border-radius: 8px;
+  padding: 32px;
+  /* padding-box = fundo sólido / border-box = borda animada */
+  background:
+    linear-gradient(var(--bg-3), var(--bg-3)) padding-box,
+    conic-gradient(
+      from var(--form-angle),
+      transparent 0deg,
+      rgba(0,179,126,0) 70deg,
+      rgba(0,179,126,0.9) 95deg,
+      rgba(255,255,255,0.55) 110deg,
+      rgba(0,201,141,0.95) 130deg,
+      rgba(0,179,126,0.4) 160deg,
+      transparent 200deg,
+      transparent 360deg
+    ) border-box;
+  border: 1px solid transparent;
+  animation: form-border-spin 6s linear infinite;
+  /* 6 camadas de sombra — técnica aura.build */
+  box-shadow:
+    0 0 0 1px rgba(0,179,126,0.06),
+    0 2px 4px rgba(0,0,0,0.12),
+    0 8px 16px rgba(0,0,0,0.18),
+    0 24px 40px rgba(0,0,0,0.28),
+    0 48px 80px rgba(0,0,0,0.38),
+    0 0 60px rgba(0,179,126,0.10);
+  position: relative; overflow: hidden;
+}
+
+/* ── Aurora: camada de gradiente flutuante interna ── */
+.form-aurora {
+  position: absolute; inset: -40px;
+  background:
+    radial-gradient(ellipse at 15% 15%, rgba(0,179,126,0.09) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 10%, rgba(0,255,160,0.05) 0%, transparent 45%),
+    radial-gradient(ellipse at 50% 90%, rgba(0,179,126,0.07) 0%, transparent 50%);
+  background-size: 200% 200%;
+  animation: aurora-drift 10s ease-in-out infinite;
+  pointer-events: none; z-index: 0;
+  border-radius: 8px;
+}
+
+/* Garante que todo conteúdo interno fique acima da aurora */
+.hero-form > *:not(.form-aurora) { position: relative; z-index: 1; }
+
+/* ── Badge com ícone flutuante ── */
 .form-badge {
   display: flex; align-items: center; gap: 12px;
   padding: 14px 16px; margin-bottom: 24px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  border-left: 2px solid var(--green);
+  background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(0,179,126,0.2);
+  border-radius: 6px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
-.form-badge-icon { font-size: 1.6rem; flex-shrink: 0; }
+.form-badge-icon {
+  font-size: 1.6rem; flex-shrink: 0;
+  animation: badge-float 4s ease-in-out infinite;
+  display: inline-block;
+}
 .form-badge-text strong {
   display: block; font-size: 12px; font-weight: 700; color: var(--white);
   margin-bottom: 2px;
 }
 .form-badge-text span { font-size: 11px; color: var(--gray-2); }
 
+/* ── Dots com animação de pulso sequencial ── */
 .form-dots { display: flex; gap: 4px; margin-bottom: 20px; }
 .form-dots span {
-  flex: 1; height: 2px; background: var(--green); border-radius: 0;
+  flex: 1; height: 2px; border-radius: 0;
+  background: linear-gradient(90deg, var(--green), var(--green-hi));
+  animation: form-pulse-glow 2s ease-in-out infinite;
 }
+.form-dots span:nth-child(2) { animation-delay: 0.3s; }
+.form-dots span:nth-child(3) { animation-delay: 0.6s; }
 
 .hero-form h3 {
   font-size: 1.1rem; font-weight: 700; color: var(--white);
@@ -310,42 +398,58 @@ body {
 }
 .f-group input {
   width: 100%;
-  background: var(--bg-card);
+  background: rgba(0,0,0,0.5);
   border: 1px solid var(--border-md);
   color: var(--white);
   border-radius: 4px;
   padding: 12px 14px;
   font-size: 14px; font-family: var(--font); font-weight: 400;
   outline: none;
-  transition: border-color 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
+  transition: border-color 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out), background 0.25s;
+  backdrop-filter: blur(4px);
 }
 .f-group input::placeholder { color: var(--gray-3); }
 .f-group input:focus {
-  border-color: var(--green);
-  box-shadow: 0 0 0 3px var(--green-dim);
+  border-color: rgba(0,179,126,0.7);
+  background: rgba(0,179,126,0.04);
+  box-shadow: 0 0 0 3px rgba(0,179,126,0.12), inset 0 0 12px rgba(0,179,126,0.04);
 }
 
+/* ── Botão com shimmer de gradiente animado ── */
 .btn-submit {
   display: block; width: 100%;
-  background: var(--green); color: #000;
   border: none; font-weight: 800; font-size: 14px;
   padding: 15px; border-radius: 4px;
   cursor: pointer; font-family: var(--font);
-  letter-spacing: 0.01em; margin-top: 8px;
-  transition: background 0.2s var(--ease-out), transform 0.1s;
+  letter-spacing: 0.02em; margin-top: 8px;
   position: relative; overflow: hidden;
+  color: #000;
+  /* Gradiente animado inspirado em aura.build shiny-cta */
+  background: linear-gradient(
+    110deg,
+    #00B37E 0%,
+    #00C98D 25%,
+    #00ffaa 50%,
+    #00C98D 75%,
+    #00B37E 100%
+  );
+  background-size: 200% auto;
+  animation: btn-shimmer 3s linear infinite;
+  transition: transform 0.1s, box-shadow 0.2s var(--ease-out);
+  box-shadow: 0 0 20px rgba(0,179,126,0.25), 0 4px 16px rgba(0,0,0,0.3);
 }
-.btn-submit::after {
+.btn-submit::before {
   content: '';
-  position: absolute; top: 0; left: -100%; width: 60%; height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
-  transform: skewX(-20deg);
-  transition: left 0.6s var(--ease-out);
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.12) 0%, transparent 100%);
+  pointer-events: none; border-radius: 4px;
 }
-.btn-submit:hover { background: var(--green-hi); }
-.btn-submit:hover::after { left: 140%; }
-.btn-submit:active { transform: scale(0.99); }
-.btn-submit:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn-submit:hover {
+  box-shadow: 0 0 32px rgba(0,179,126,0.45), 0 8px 24px rgba(0,0,0,0.4);
+  transform: translateY(-1px);
+}
+.btn-submit:active { transform: scale(0.99) translateY(0); }
+.btn-submit:disabled { opacity: 0.45; cursor: not-allowed; animation: none; }
 
 .form-micro {
   font-size: 10px; color: var(--gray-2); text-align: center;
@@ -1145,6 +1249,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <!-- FORMULÁRIO -->
     <div class="hero-form reveal reveal-d1" id="formulario">
+      <!-- Aurora background layer -->
+      <div class="form-aurora"></div>
+
       <div class="form-badge">
         <span class="form-badge-icon">📘</span>
         <div class="form-badge-text">
