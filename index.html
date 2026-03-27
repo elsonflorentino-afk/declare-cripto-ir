@@ -888,13 +888,26 @@ body {
   font-size: 0.95rem; color: var(--gray-2); line-height: 1.75; margin-bottom: 32px;
 }
 
-.brand-stats { display: flex; gap: 40px; flex-wrap: wrap; }
+.brand-stats {
+  display: flex; gap: 0; flex-wrap: wrap;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding-top: 24px;
+}
+.brand-stat {
+  padding-right: 32px;
+  margin-right: 32px;
+  border-right: 1px solid rgba(255,255,255,0.08);
+}
+.brand-stat:last-child { border-right: none; padding-right: 0; margin-right: 0; }
 .brand-stat .bs-num {
   font-size: 2rem; font-weight: 800; letter-spacing: -0.04em;
   color: var(--white); line-height: 1;
 }
 .brand-stat .bs-num em { font-style: normal; color: var(--green); }
-.brand-stat .bs-label { font-size: 11px; color: var(--gray-2); margin-top: 4px; }
+.brand-stat--accent .bs-num em {
+  font-size: 2rem; letter-spacing: -0.04em; color: var(--green);
+}
+.brand-stat .bs-label { font-size: 11px; color: var(--gray-2); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.06em; }
 
 /* ════════════════════════════════
    CTA FINAL
@@ -1605,9 +1618,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <div class="bs-num"><span class="counter" data-target="2">2</span></div>
             <div class="bs-label">ciclos completos</div>
           </div>
-          <div class="brand-stat">
-            <div class="bs-num" style="font-size:1.4rem;letter-spacing:-0.02em">fixo</div>
-            <div class="bs-label">honorário independente</div>
+          <div class="brand-stat brand-stat--accent">
+            <div class="bs-num"><em>zero</em></div>
+            <div class="bs-label">comissão de exchange</div>
           </div>
         </div>
       </div>
