@@ -1172,7 +1172,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <a class="nav-logo" href="#">
       <img src="https://s3.amazonaws.com/plugcrm-app/69a1cc3e5a0b690013d94fe3/instance_file/69bc7d48d81f8b00269a7336.jpg" alt="Boost Research">
     </a>
-    <a href="#formulario" class="nav-cta" onclick="document.getElementById('formulario').scrollIntoView({behavior:'smooth'});return false;">
+    <a href="#formulario" class="nav-cta" onclick="document.getElementById('formulario').scrollIntoView({behavior:'smooth'});window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'cta_click',cta_id:'navbar_cta',cta_text:'Baixar e-book gratuito'});return false;">
       Baixar e-book gratuito
     </a>
   </div>
@@ -1513,7 +1513,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
 
     <div class="cta-inline reveal">
-      <a href="#formulario" onclick="document.getElementById('formulario').scrollIntoView({behavior:'smooth'});return false;" class="btn-primary">
+      <a href="#formulario" onclick="document.getElementById('formulario').scrollIntoView({behavior:'smooth'});window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'cta_click',cta_id:'mid_cta',cta_text:'Baixar o e-book gratuito agora'});return false;" class="btn-primary">
         Baixar o e-book gratuito agora →
       </a>
       <p style="font-size:11px;color:var(--gray-2);margin-top:10px;">Gratuito. Sem spam. Entrega imediata no e-mail.</p>
@@ -1529,7 +1529,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <p>Declare cripto em 2026 com o mesmo rigor que aplica no resto do patrimônio.</p>
       <p>E-book gratuito — 6 capítulos, checklist e exemplos práticos. Curadoria: André Franco.</p>
     </div>
-    <a href="#formulario" onclick="document.getElementById('formulario').scrollIntoView({behavior:'smooth'});return false;"
+    <a href="#formulario" onclick="document.getElementById('formulario').scrollIntoView({behavior:'smooth'});window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'cta_click',cta_id:'banner_cta',cta_text:'Quero o e-book gratuito'});return false;"
        class="btn-primary reveal reveal-d1">
       Quero o e-book gratuito →
     </a>
@@ -1630,7 +1630,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <p class="s-sub">Baixe agora o e-book da Boost Research e entre na declaração sabendo exatamente o que declarar, como calcular e como se proteger de multas.</p>
       </div>
       <div class="cta-final-btn-wrap reveal reveal-d1">
-        <a href="#formulario" onclick="document.getElementById('formulario').scrollIntoView({behavior:'smooth'});return false;"
+        <a href="#formulario" onclick="document.getElementById('formulario').scrollIntoView({behavior:'smooth'});window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'cta_click',cta_id:'final_cta',cta_text:'Baixar o e-book gratuito agora'});return false;"
            class="btn-primary" style="padding: 18px 48px; font-size: 1rem;">
           Baixar o e-book gratuito agora →
         </a>
@@ -1760,11 +1760,18 @@ function getUTM(key) {
   if (c) return c;
   try { return sessionStorage.getItem('boost_utm_' + key) || ''; } catch (e) { return ''; }
 }
+function getUTMOrDefault(key) {
+  var v = getUTM(key);
+  if (v) return v;
+  if (key === 'source') return 'direct';
+  if (key === 'medium') return 'none';
+  return '';
+}
 
 function fillUTMs() {
   ['source','medium','campaign','content','term'].forEach(function (k) {
     var el = document.getElementById('f-utm-' + k);
-    if (el) el.value = getCookie('boost_utm_' + k);
+    if (el) el.value = getUTMOrDefault(k);
   });
 }
 document.addEventListener('DOMContentLoaded', fillUTMs);
@@ -1967,10 +1974,69 @@ if (mobileCta && heroForm) {
 
 <!-- ── MOBILE FLOATING CTA ── -->
 <div id="mobile-cta" class="mobile-cta">
-  <a href="#formulario" class="mobile-cta-btn" onclick="document.getElementById('formulario').scrollIntoView({behavior:'smooth'});return false;">
+  <a href="#formulario" class="mobile-cta-btn" onclick="document.getElementById('formulario').scrollIntoView({behavior:'smooth'});window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'cta_click',cta_id:'mobile_cta',cta_text:'Baixar e-book grátis'});return false;">
     Baixar e-book grátis →
   </a>
 </div>
+
+<!-- ── WHATSAPP FLOATING BUTTON ── -->
+<style>
+.btn-wa-float-ir {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #25D366;
+  color: #000;
+  font-weight: 800;
+  font-size: 0.9rem;
+  font-family: var(--font-sans, sans-serif);
+  padding: 14px 20px;
+  border-radius: 50px;
+  text-decoration: none;
+  box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+  transition: transform 0.2s, box-shadow 0.2s, opacity 0.3s;
+  opacity: 0;
+  pointer-events: none;
+}
+.btn-wa-float-ir.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+.btn-wa-float-ir:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(37,211,102,0.55);
+}
+@media (max-width: 600px) {
+  .btn-wa-float-ir .wa-label { display: none; }
+  .btn-wa-float-ir { padding: 14px; border-radius: 50%; bottom: 80px; }
+}
+</style>
+
+<a href="https://wa.me/5521965622891?text=Olá%2C%20vim%20pela%20LP%20de%20IR%20Cripto%20e%20gostaria%20de%20falar%20com%20a%20equipe%20Boost%20Research"
+   target="_blank"
+   rel="noopener"
+   id="btn-wa-float-ir"
+   class="btn-wa-float-ir"
+   onclick="window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'whatsapp_click',cta_id:'floating_wa',section:'global'});">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" fill="#000"/>
+    <path d="M12.004 2C6.477 2 2 6.477 2 12.004c0 1.773.467 3.476 1.354 4.977L2 22l5.178-1.354A10.003 10.003 0 0012.004 22C17.53 22 22 17.523 22 12.004 22 6.477 17.53 2 12.004 2zm0 18.29a8.283 8.283 0 01-4.218-1.157l-.302-.18-3.073.805.82-2.994-.197-.31A8.286 8.286 0 013.71 12.004C3.71 7.42 7.42 3.71 12.004 3.71c4.58 0 8.286 3.71 8.286 8.294 0 4.584-3.706 8.286-8.286 8.286z" fill="#000"/>
+  </svg>
+  <span class="wa-label">Falar com a Boost Research</span>
+</a>
+<script>
+(function() {
+  var waBtn = document.getElementById('btn-wa-float-ir');
+  if (!waBtn) return;
+  window.addEventListener('scroll', function() {
+    waBtn.classList.toggle('visible', window.scrollY > 400);
+  }, { passive: true });
+})();
+</script>
 
 </body>
 </html>
